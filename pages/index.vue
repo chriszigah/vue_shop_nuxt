@@ -9,13 +9,17 @@
             </h1>
             <div class="a-spacing-large"></div>
             <!-- Buttons -->
-            <a href="#" class="a-button-buy-again">Add a new Product</a>
-            <a href="#" class="a-button-history margin-right-10"
-              >Add a new Category</a
+            <nuxt-link to="/product" class="a-button-buy-again"
+              >Add a new Product</nuxt-link
             >
-            <a href="#" class="a-button-history margin-right-10"
-              >Add a new Owner</a
+            <nuxt-link to="/category" class="a-button-history margin-right-10"
+              >Add a new Category</nuxt-link
             >
+
+            <nuxt-link to="owner" class="a-button-history margin-right-10"
+              >Add a new Owner</nuxt-link
+            >
+
             <!-- End of Buttons -->
           </div>
         </div>
@@ -58,9 +62,19 @@
                 <span class="p13n-sc-price">GH¢ {{ product.price }}</span>
               </div>
               <!-- Product Buttons -->
+
               <div class="row">
-                <a href="#" class="a-button-history margin-right-10">Upadate</a>
-                <a href="#" class="a-button-history margin-right-10">Delete</a>
+                <nuxt-link
+                  :to="`/product/${product._id}`"
+                  class="a-button-history margin-right-10"
+                  >Upadate</nuxt-link
+                >
+                <button
+                  @click="onDeleteProduct(product._id, index)"
+                  class="a-button-history margin-right-10"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           </div>
@@ -77,7 +91,7 @@ export default {
   // it is good for SEO because the data will be loaded first
   async asyncData({ $axios }) {
     try {
-      let response = await $axios.$get('/api/product/all');
+      let response = await $axios.$get("/api/product/all");
 
       return {
         products: response.Products,
@@ -85,6 +99,20 @@ export default {
     } catch (error) {
       console.log(error);
     }
+  },
+
+  methods: {
+    async onDeleteProduct(id, index) {
+      try {
+        let response = await this.$axios.$delete(`/api/product/${id}`);
+
+        if (response.status === 200) {
+          this.product.splice(index, 1);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
   },
 };
 </script>
@@ -100,8 +128,8 @@ export default {
 }
 
 .title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   display: block;
   font-weight: 300;
   font-size: 100px;
